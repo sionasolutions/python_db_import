@@ -3,13 +3,13 @@ import mysql.connector
 import os
 import subprocess
 
-# Define the MySQL command path for Windows (update to the actual location where MySQL is installed)
-mysql_command = 'C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe'
+# MySQL command is typically just 'mysql' if it's in your PATH on macOS
+mysql_command = 'mysql'
 
 # Database connection parameters
 host = 'localhost'
 user = 'root'
-# Use an environment variable for the password for better security
+# It is recommended to use environment variables for sensitive data like passwords
 password = os.getenv('MYSQL_PASSWORD', 'root')  # Default to 'root' if not set
 
 # Get table names from command-line arguments
@@ -38,8 +38,7 @@ try:
         sql_file = f"{table_name}.sql"
         if os.path.exists(sql_file):
             # Using subprocess to run MySQL command to import the SQL file
-            # Ensure correct quoting of command line arguments for Windows
-            command = f'"{mysql_command}" -h {host} -u {user} --password="{password}" < "{sql_file}"'
+            command = f'{mysql_command} -h {host} -u {user} --password="{password}" < "{sql_file}"'
             result = subprocess.run(command, shell=True, capture_output=True, text=True)
             if result.returncode == 0:
                 print(f"SQL file '{sql_file}' imported successfully for table '{table_name}'.")
@@ -58,3 +57,4 @@ finally:
         cursor.close()
         conn.close()
         print("MySQL connection is closed.")
+
